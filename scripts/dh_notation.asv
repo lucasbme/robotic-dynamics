@@ -1,9 +1,0 @@
-%% ==================== Notação de Denavit-Hartenberg =====================
-% Descrição: aplica a notação DH sobre os parâmetros do manipulador
-
-function A = dh_notation(a, alpha, d, theta)
-
-ca = cos(alpha);
-
-
-end
