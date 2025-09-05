@@ -23,7 +23,7 @@ def main():
     joyNode = Joystick(yamlPath)
 
     # ========== Inicializa Manipulador ==========
-    params = {"d2": 0.3, "d4": 0.4, "d6": 0.1}
+    params = {"d2": 0.2, "d4": 0.2, "d6": 0.2}
     robot = Manipulator(params)
 
     # ========== Plot3D (Toolbox) ==========
