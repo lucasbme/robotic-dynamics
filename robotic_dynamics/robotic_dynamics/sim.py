@@ -1,53 +1,37 @@
 # Autores: Lucas Bosso de Mello
 # Descrição: Código principal de controle de fluxo
 # Data: 05/09/2025
-# Última modificação por Lucas Bosso em 05/09/2025
+# Última modificação por Lucas Bosso em 17/09/2025
 
 # ========== Inclusão de Bibliotecas ==========
 
-import rclpy
-import time
-import os
+import numpy as np
 from robotic_dynamics.manipulator import Manipulator
 from robotic_dynamics.joy import Joystick
 
 # ========== Função Principal ==========
 
 def main():
-    rclpy.init()
-
-    # ========== Inicializa Joystick ==========
-    currentDir = os.path.expanduser('~/ros2_ws')
-    yamlPath = os.path.join(currentDir, "src/robotic_dynamics/config/joy_remap.yaml")
-
-    joyNode = Joystick(yamlPath)
-
     # ========== Inicializa Manipulador ==========
-    params = {"d2": 0.2, "d4": 0.2, "d6": 0.2}
+    params = {"d2": 0.2, "d4": 0.2}
+    q = [np.deg2rad(0),   # q1
+         np.deg2rad(0),   # q2
+         0.2,             # q3 (prismática)
+         np.deg2rad(0),   # q4
+         np.deg2rad(0)]   # q5
+
+    # ========== Cria a Instância ==========
     robot = Manipulator(params)
+    
+    # ========== Aplica Cinemática Inversa ==========
+    T = robot.fkine(q)
 
-    # ========== Plot3D (Toolbox) ==========
-    robot.plot(robot.q, block=False)
+    robot.plot(q, block=True)
 
-    # ========== ROS 2 Node ==========
-    try:
-        while rclpy.ok():
-            rclpy.spin_once(joyNode, timeout_sec=0.01)
+    print("Matriz de transformação homogênea (FK):")
+    print(T)
 
-            # ========== Posição das Juntas (Joystick) ==========
-            robot.joystick(joyNode.joyVel)
-
-            # ========== Visualização (em Tempo Real) ==========
-            robot.plot(robot.q, block=False)
-
-            time.sleep(0.05)
-
-    # ========== Destrutor ==========   
-    except KeyboardInterrupt:
-        pass
-    finally:
-        joyNode.destroy_node()
-        rclpy.shutdown()
+    print("\nPosição (x, y, z):", T.t)
 
 if __name__ == '__main__':
     main()

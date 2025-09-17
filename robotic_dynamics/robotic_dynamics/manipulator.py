@@ -13,7 +13,8 @@ from robotic_dynamics.joy import Joystick
 
 class Manipulator(DHRobot):
 
-    # ========== Cinemática Direta (DH) ==========
+    # ========== Cria o Manipulador usando DH ==========
+
     def __init__(self, params):
         links = [
             RevoluteDH(a = 0, alpha = -np.pi / 2, d = 0),
@@ -24,32 +25,6 @@ class Manipulator(DHRobot):
         ]
 
         super().__init__(links, name = "5DOF")
-
-        # ========== Posição Inicial das Juntas ==========
-        self.q = np.zeros(self.n)
-
-    # ========== Posição das Juntas (Joystick)  ==========
-    def joystick(self, joyCmd, gainRot = 0.02, gainLin = 0.01):
-        steps = np.zeros(self.n)
-        steps[0] = joyCmd.angular.z * gainRot   # Rotacional
-        steps[1] = joyCmd.linear.x  * gainRot   # Rotacional
-        steps[2] = joyCmd.linear.z  * gainLin   # Prismático
-        steps[3] = joyCmd.linear.y  * gainRot   # Rotacional
-
-        # ========== Incrementa juntas ========== 
-        self.q += steps
-
-        # ========== Limita prismático ========== 
-        self.q[2] = np.clip(self.q[2], 0, 0.5)
-
-        return self.q
-
-    # ========== Atualiza Posição das Juntas ========== 
-    def jointPosition(self, q, steps):
-        qNew = q + steps
-        qNew[2] = np.clip(qNew[2], 0, 0.5)
-
-        return qNew
 
 # ========== Implementação direta ==========
 
