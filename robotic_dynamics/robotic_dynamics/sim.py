@@ -6,6 +6,7 @@
 # ========== Inclusão de Bibliotecas ==========
 
 import numpy as np
+from spatialmath import SE3
 from robotic_dynamics.manipulator import Manipulator
 from robotic_dynamics.joy import Joystick
 
@@ -23,15 +24,38 @@ def main():
     # ========== Cria a Instância ==========
     robot = Manipulator(params)
     
-    # ========== Aplica Cinemática Inversa ==========
+    # ========== Aplica Cinemática Direta ==========
     T = robot.fkine(q)
-
-    robot.plot(q, block=True)
 
     print("Matriz de transformação homogênea (FK):")
     print(T)
 
     print("\nPosição (x, y, z):", T.t)
+
+    # ========== Aplica Cinemática Inversa ==========
+    # ===== Posição Desejada =====
+    qf = {
+        "x": 0.2,
+        "y": 0.0,
+        "z": 0.3
+    }                                  
+
+    # ===== Gera Matriz Homogênea =====
+    Tdes = SE3(qf["x"], qf["y"], qf["z"])                   
+
+    # ===== Encontra a Solução =====
+    ikSolution = robot.ikine_LM(Tdes, q0=[0, 0, 0.0, 0, 0])  
+
+    # ===== Verifica se a Solução é Viável =====
+    if ikSolution.success:
+        print("\nConfiguração de juntas encontrada (IK):")
+        print(ikSolution.q)
+    else:
+        print("\nA configuração não possui solução (IK).")
+
+    # ========== Plot ==========
+    robot.plot(ikSolution.q, block=True)
+
 
 if __name__ == '__main__':
     main()
