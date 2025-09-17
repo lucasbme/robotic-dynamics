@@ -14,6 +14,7 @@ from robotic_dynamics.joy import Joystick
 class Manipulator(DHRobot):
 
     # ========== Cria o Manipulador usando DH ==========
+
     def __init__(self, params):
         links = [
             RevoluteDH(a = 0, alpha = -np.pi / 2, d = 0),
