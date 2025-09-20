@@ -39,4 +39,8 @@ q_des = [0.2, 0.0, 0.3];
 [q_sol, Tf_sol, Ts_sol] = ik(q_des, params);
 disp('Solutions: '); disp(q_sol);
 
+% ========== Jacobiano ========== 
+J = jacobian(q, params);
+disp('Jacobiano: '); disp(J);
+
 plot3d(Ts_sol, 2);
