@@ -70,7 +70,7 @@ def main():
     robot.plot(robot.q, block=True)       # Plot do manipulador na notação DH
     # robot.plot(ikSolution.q, block=True)  # Posição das juntas após IK
 
-    # ========== Trajetoria ==========
+    # ========== Trajetoria ========== 
     qStart = np.array([0, 0, 0, 0, 0])
     qEnd = ikSolution.q          # Posição das juntas via IK
     
