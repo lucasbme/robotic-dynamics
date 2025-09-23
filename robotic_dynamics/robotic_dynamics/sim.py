@@ -1,28 +1,35 @@
 # Autores: Lucas Bosso de Mello
 # Descrição: Código principal de controle de fluxo
 # Data: 05/09/2025
-# Última modificação por Lucas Bosso em 17/09/2025
+# Última modificação por Lucas Bosso em 22/09/2025
 
 # ========== Inclusão de Bibliotecas ==========
 
-import numpy as np
-from spatialmath import SE3
-from robotic_dynamics.manipulator import Manipulator
-from robotic_dynamics.joy import Joystick
+import numpy as np                                      # Matemática
+from spatialmath import SE3                             # Representação Espacial
+import roboticstoolbox as rtb                           # Toolbox Peter Corke
 
 # ========== Função Principal ==========
 
 def main():
     # ========== Inicializa Manipulador ==========
-    params = {"d2": 0.2, "d4": 0.2}
+    params = {"d1": 0.2, "d2": 0.2} # Parâmetros do Manipulador
+
+    robot = rtb.DHRobot([
+        rtb.RevoluteDH( d = params["d1"], a = 0, alpha = -np.pi / 2),
+        rtb.RevoluteDH( d = params["d2"], a = 0, alpha = np.pi / 2),
+        rtb.PrismaticDH(theta = -np.pi/2, a = 0, alpha = 0, offset=0.2, qlim=[0.0, 0.5]),
+        rtb.RevoluteDH( d = 0,            a = 0, alpha = -np.pi / 2),
+        rtb.RevoluteDH( d = 0,            a = 0, alpha = np.pi / 2)
+    ])
+
+    # Vetor de Estados das Juntas
     q = [np.deg2rad(0),   # q1
          np.deg2rad(0),   # q2
          0.2,             # q3 (prismática)
          np.deg2rad(0),   # q4
          np.deg2rad(0)]   # q5
 
-    # ========== Cria a Instância ==========
-    robot = Manipulator(params)
     
     # ========== Aplica Cinemática Direta ==========
     T = robot.fkine(q)
@@ -53,9 +60,15 @@ def main():
     else:
         print("\nA configuração não possui solução (IK).")
 
-    # ========== Plot ==========
-    robot.plot(ikSolution.q, block=True)
+    # ========== Jacobiano ==========
+    # print('\nJacobiano: ')
+    # J = robot.jacob0(q, T)
 
+    # print(J)
+
+    # ========== Plot ==========
+    robot.plot(robot.q, block=True)       # Plot do manipulador na notação DH
+    # robot.plot(ikSolution.q, block=True)  # Posição das juntas após IK
 
 if __name__ == '__main__':
     main()
