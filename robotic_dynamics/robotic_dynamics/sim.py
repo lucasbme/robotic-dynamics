@@ -1,7 +1,7 @@
-# Autores: Lucas Bosso de Mello
+# Autores: Lucas Bosso de Mello, Lucas Maroun de Almeida
 # Descrição: Código principal de controle de fluxo
 # Data: 05/09/2025
-# Última modificação por Lucas Bosso em 22/09/2025
+# Última modificação por Lucas Maroun em 23/09/2025
 
 # ========== Inclusão de Bibliotecas ==========
 
@@ -18,7 +18,7 @@ def main():
     robot = rtb.DHRobot([
         rtb.RevoluteDH( d = params["d1"], a = 0, alpha = -np.pi / 2),
         rtb.RevoluteDH( d = params["d2"], a = 0, alpha = np.pi / 2),
-        rtb.PrismaticDH(theta = -np.pi/2, a = 0, alpha = 0, offset=0.2, qlim=[0.0, 0.5]),
+        rtb.PrismaticDH(theta = -np.pi/2, a = 0, alpha = 0, offset=0.2, qlim=[0.0, 0.2]),
         rtb.RevoluteDH( d = 0,            a = 0, alpha = -np.pi / 2),
         rtb.RevoluteDH( d = 0,            a = 0, alpha = np.pi / 2)
     ])
@@ -67,7 +67,7 @@ def main():
     # print(J)
 
     # ========== Plot ==========
-    robot.plot(robot.q, block=True)       # Plot do manipulador na notação DH
+    # robot.plot(robot.q, block=True)       # Plot do manipulador na notação DH
     # robot.plot(ikSolution.q, block=True)  # Posição das juntas após IK
 
     # ========== Trajetoria ========== 
@@ -82,7 +82,7 @@ def main():
 
     # Aplica trajetória polinomial
     traj = rtb.jtraj(qStart, qEnd, t)
-    robot.plot(traj.q, backend="pyplot", dt=dt)
+    robot.plot(traj.q, backend="pyplot", block=True, dt=dt)
 
-if __name__ == '__main__':
-    main()
+if _name_ == '_main_':
+    main()
