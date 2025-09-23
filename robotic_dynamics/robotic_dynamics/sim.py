@@ -9,8 +9,25 @@ import numpy as np                                      # Matemática
 from spatialmath import SE3                             # Representação Espacial
 import roboticstoolbox as rtb                           # Toolbox Peter Corke
 
-# ========== Função Principal ==========
 
+    
+# ========== Trajetoria ==========
+def trajectory(robot, qStart, ikSolution):
+    qEnd = ikSolution.q          # Posição das juntas via IK
+    
+    # Tempo de simulação 
+    tSimulation = 10                
+    dt = 0.05                       
+    steps = int(tSimulation / dt)    
+    t = np.linspace(0, tSimulation, steps)
+
+    # Aplica trajetória polinomial
+    traj = rtb.jtraj(qStart, qEnd, t)
+    robot.plot(traj.q, backend="pyplot", dt=dt)
+    
+
+
+# ========== Função Principal ==========
 def main():
     # ========== Inicializa Manipulador ==========
     params = {"d1": 0.2, "d2": 0.2} # Parâmetros do Manipulador
@@ -18,11 +35,13 @@ def main():
     robot = rtb.DHRobot([
         rtb.RevoluteDH( d = params["d1"], a = 0, alpha = -np.pi / 2),
         rtb.RevoluteDH( d = params["d2"], a = 0, alpha = np.pi / 2),
-        rtb.PrismaticDH(theta = -np.pi/2, a = 0, alpha = 0, offset=0.2, qlim=[0.0, 0.2]),
+        rtb.PrismaticDH(theta = -np.pi/2, a = 0, alpha = 0, offset=0.2, qlim=[0.0, 0.5]),
         rtb.RevoluteDH( d = 0,            a = 0, alpha = -np.pi / 2),
         rtb.RevoluteDH( d = 0,            a = 0, alpha = np.pi / 2)
     ])
 
+    qStart = np.zeros(5)  # Vetor de Estados das Juntas (Inicial)
+    
     # Vetor de Estados das Juntas
     q = [np.deg2rad(0),   # q1
          np.deg2rad(0),   # q2
@@ -57,6 +76,7 @@ def main():
     if ikSolution.success:
         print("\nConfiguração de juntas encontrada (IK):")
         print(ikSolution.q)
+        trajectory(robot, qStart, ikSolution)
     else:
         print("\nA configuração não possui solução (IK).")
 
@@ -69,20 +89,11 @@ def main():
     # ========== Plot ==========
     # robot.plot(robot.q, block=True)       # Plot do manipulador na notação DH
     # robot.plot(ikSolution.q, block=True)  # Posição das juntas após IK
-
-    # ========== Trajetoria ========== 
-    qStart = np.array([0, 0, 0, 0, 0])
-    qEnd = ikSolution.q          # Posição das juntas via IK
     
-    # Tempo de simulação 
-    tSimulation = 10                
-    dt = 0.05                       
-    steps = int(tSimulation / dt)    
-    t = np.linspace(0, tSimulation, steps)
+    
+    
+    
 
-    # Aplica trajetória polinomial
-    traj = rtb.jtraj(qStart, qEnd, t)
-    robot.plot(traj.q, backend="pyplot", block=True, dt=dt)
 
-if _name_ == '_main_':
-    main()
+if __name__ == '__main__':
+    main()
