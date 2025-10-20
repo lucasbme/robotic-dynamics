@@ -23,20 +23,20 @@ def trajectory(robot, qStart, ikSolution):
 
     # Aplica trajetória polinomial
     traj = rtb.jtraj(qStart, qEnd, t)
-    robot.plot(traj.q, backend="pyplot", dt=dt)
+    robot.plot(traj.q, backend="pyplot", dt=dt, block=True)
     
 
 
 # ========== Função Principal ==========
 def main():
     # ========== Inicializa Manipulador ==========
-    params = {"d1": 0.2, "d2": 0.2} # Parâmetros do Manipulador
+    params = {"d1": 0.2, "d2": 0.1} # Parâmetros do Manipulador
 
     robot = rtb.DHRobot([
-        rtb.RevoluteDH( d = params["d1"], a = 0, alpha = -np.pi / 2),
-        rtb.RevoluteDH( d = params["d2"], a = 0, alpha = np.pi / 2),
+        rtb.RevoluteDH( d = params['d1'], a = 0, alpha = -np.pi / 2),
+        rtb.RevoluteDH( d = params['d2'], a = 0, alpha = np.pi / 2),
         rtb.PrismaticDH(theta = -np.pi/2, a = 0, alpha = 0, offset=0.2, qlim=[0.0, 0.5]),
-        rtb.RevoluteDH( d = 0,            a = 0, alpha = -np.pi / 2),
+        rtb.RevoluteDH( d = 0,            a = 0, alpha = np.pi / 2),
         rtb.RevoluteDH( d = 0,            a = 0, alpha = np.pi / 2)
     ])
 
@@ -61,9 +61,9 @@ def main():
     # ========== Aplica Cinemática Inversa ==========
     # ===== Posição Desejada =====
     qf = {
-        "x": 0.2,
-        "y": 0.0,
-        "z": 0.3
+        "x": -0.3,
+        "y": 0.1,
+        "z": 0.6
     }                                  
 
     # ===== Gera Matriz Homogênea =====
@@ -87,13 +87,8 @@ def main():
     # print(J)
 
     # ========== Plot ==========
-    # robot.plot(robot.q, block=True)       # Plot do manipulador na notação DH
+    robot.plot(robot.q, block=True)       # Plot do manipulador na notação DH
     # robot.plot(ikSolution.q, block=True)  # Posição das juntas após IK
-    
-    
-    
-    
-
 
 if __name__ == '__main__':
     main()
