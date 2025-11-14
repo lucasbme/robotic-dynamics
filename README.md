@@ -45,7 +45,15 @@ O design do manipulador foi pensado para o ambiente offshore:
 * Material: alumínio, com o intuito de aliviar a massa e garantir a vedação;
 * Câmera: compartimento vedado.
 
-### Parâmetros de Denavit=Hartenberg
+### CAD 
+
+O CAD do manipulador foi realizado através do software *Inventor*.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/ad309d2d-8996-4a39-a27b-e9d01af86f6b" alt="CAD do manipulador" width="50%">
+</p>
+
+### Parâmetros de Denavit-Hartenberg
 
 Seguindo o modelo proposto, com 5 GDL (RRPRR), a com os parâmetros de Denavit-Hartenberg do manipulador foram agrupados na tabela a seguir:
 
