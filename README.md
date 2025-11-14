@@ -6,7 +6,7 @@ Projeto de "Dinâmica de Sistemas Robóticos" desenvolvido por ... O objetivo é
 
 ## Índice
 
-* [Visão Geral do Projeto](#-visão-geral-do-projeto)
+* [Visão Geral do Projeto](#visão-geral-do-projeto)
 * [Parâmetros de Denavit-Hatenberg](#-parametros-dh)
 * [Cinemática Direta](#-direta)
 * [Cinemática Inversa](#-inversa)
