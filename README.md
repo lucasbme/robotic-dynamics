@@ -7,7 +7,11 @@ Projeto de "Dinâmica de Sistemas Robóticos" desenvolvido por ... O objetivo é
 ## Índice
 
 * [Visão Geral do Projeto](#visão-geral-do-projeto)
+<<<<<<< HEAD
 * [Manipulador](#manipulador)
+=======
+* [Parâmetros de Denavit-Hatenberg](#-parametros-dh)
+>>>>>>> e0b84d68776cf9d042a8e4c566188a6cd5d19bd3
 * [Cinemática Direta](#-direta)
 * [Cinemática Inversa](#-inversa)
 * [Jacobiana](#-jacob)
@@ -28,6 +32,7 @@ As principais dificuldades identificadas para este tipo de operação incluem:
 
 ### Solução Proposta
 Para resolver esses desafios, a arquitetura do projeto combina:
+<<<<<<< HEAD
 * Plataforma Móvel: Um robô quadrúpede, escolhido por seu desempenho superior em terrenos irregulares.
 * Manipulador: Um braço robótico com uma câmera acoplada na ponta para realizar a inspeção visual.
 * Visão Computacional:
@@ -56,3 +61,10 @@ Seguindo o modelo proposto, com 5 GDL (RRPRR), a com os parâmetros de Denavit-H
 | 3         | $-\pi/2$           | $q_3$        | 0            | 0                 |
 | 4         | $q_4$              | 0            | 0            | $\pi/2$           |
 | 5         | $q_5$              | 0            | 0            | $\pi/2$           |
+=======
+* **Plataforma Móvel:** Um **robô quadrúpede**, escolhido por seu desempenho superior em terrenos irregulares.
+* **Manipulador:** Um braço robótico com uma **câmera acoplada** na ponta para realizar a inspeção visual.
+* **Visão Computacional:**
+    * Leitura de medidores para inspeção.
+    * Uso de **SLAM** para mapeamento do ambiente e localização do robô.
+>>>>>>> e0b84d68776cf9d042a8e4c566188a6cd5d19bd3
