@@ -6,11 +6,17 @@
 # ========== Inclusão de Bibliotecas ==========
 
 import numpy as np                                      # Matemática
-from spatialmath import SE3                             # Representação Espacial
 import roboticstoolbox as rtb                           # Toolbox Peter Corke
 
+# from .dynamic import Dynamics
+from utils import (
+    Kinematics, 
+    Jacobian,
+    Trajectory,
+    Dynamics,
+)
 
-    
+
 # ========== Trajetoria ==========
 def trajectory(robot, qStart, ikSolution):
     qEnd = ikSolution.q          # Posição das juntas via IK
@@ -40,55 +46,61 @@ def main():
         rtb.RevoluteDH( d = 0,            a = 0, alpha = np.pi / 2)
     ])
 
-    qStart = np.zeros(5)  # Vetor de Estados das Juntas (Inicial)
     
     # Vetor de Estados das Juntas
-    q = [np.deg2rad(0),   # q1
-         np.deg2rad(0),   # q2
+    q = [0,   # q1
+         0,   # q2
          0.2,             # q3 (prismática)
-         np.deg2rad(0),   # q4
-         np.deg2rad(0)]   # q5
-
+         0,  # q4
+         0]   # q5
     
-    # ========== Aplica Cinemática Direta ==========
-    T = robot.fkine(q)
+    qf = [-0.3, 0.1, 0.6]
 
-    print("Matriz de transformação homogênea (FK):")
-    print(T)
 
-    print("\nPosição (x, y, z):", T.t)
+    kinematics = Kinematics(robot)
+    T = kinematics.calc_forward_kinematics(q)
+    
+    ik_solution = kinematics.calc_inverse_kinematics(qf)
 
-    # ========== Aplica Cinemática Inversa ==========
-    # ===== Posição Desejada =====
-    qf = {
-        "x": -0.3,
-        "y": 0.1,
-        "z": 0.6
-    }                                  
-
-    # ===== Gera Matriz Homogênea =====
-    Tdes = SE3(qf["x"], qf["y"], qf["z"])                   
-
-    # ===== Encontra a Solução =====
-    ikSolution = robot.ikine_LM(Tdes, q0=[0, 0, 0.0, 0, 0])  
-
-    # ===== Verifica se a Solução é Viável =====
-    if ikSolution.success:
-        print("\nConfiguração de juntas encontrada (IK):")
-        print(ikSolution.q)
-        trajectory(robot, qStart, ikSolution)
-    else:
-        print("\nA configuração não possui solução (IK).")
-
-    # ========== Jacobiano ==========
-    # print('\nJacobiano: ')
-    # J = robot.jacob0(q, T)
-
-    # print(J)
+    jacob = Jacobian(robot)
+    jacob.calc_jacobian(q, T)
 
     # ========== Plot ==========
     robot.plot(robot.q, block=True)       # Plot do manipulador na notação DH
     # robot.plot(ikSolution.q, block=True)  # Posição das juntas após IK
 
+
+class Manipulador:
+    def __init__(self):
+        self.init_manipulator()
+        self.q = [0,   # q1
+                  0,   # q2
+                  0.2,             # q3 (prismática)
+                  0,  # q4
+                  0]   # q5
+        
+        self.kinematics = Kinematics(self.robot)
+        self.jacobian = Jacobian(self.robot)
+        self.trajectory = Trajectory(self.robot)
+    
+    def init_manipulator(self) -> None:
+        '''
+        
+        '''
+        self.robot = rtb.DHRobot([
+        rtb.RevoluteDH( d = 0.2, a = 0, alpha = -np.pi / 2),
+        rtb.RevoluteDH( d = 0.1, a = 0, alpha = np.pi / 2),
+        rtb.PrismaticDH(theta = -np.pi/2, a = 0, alpha = 0, offset=0.2, qlim=[0.0, 0.5]),
+        rtb.RevoluteDH( d = 0,            a = 0, alpha = np.pi / 2),
+        rtb.RevoluteDH( d = 0,            a = 0, alpha = np.pi / 2)
+    ])
+    
+    def main(self):
+        ...
+
+        
+    
 if __name__ == '__main__':
+    # manipulador = Manipulador()
+    # manipulador.main()
     main()

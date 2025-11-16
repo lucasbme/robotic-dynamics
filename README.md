@@ -8,13 +8,7 @@ Projeto de "Dinâmica de Sistemas Robóticos" desenvolvido por ... O objetivo é
 
 * [Visão Geral do Projeto](#visão-geral-do-projeto)
 * [Manipulador](#manipulador)
-* [Cinemática Direta](#-direta)
-* [Cinemática Inversa](#-inversa)
-* [Jacobiana](#-jacob)
-* [Dinâmica do Manipulador](#-dinamica)
-* [Planjedor de Trajetória](#-trajetoria)
-* [Resultados](#-resultados)
-* [Autores](#-autores)
+
 
 ## Visão Geral do Projeto
 
