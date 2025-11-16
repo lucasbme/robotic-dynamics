@@ -10,17 +10,17 @@ Projeto de "Dinâmica de Sistemas Robóticos" desenvolvido por ... O objetivo é
 * [Manipulador](#manipulador)
 
 
-## Visão Geral do Projeto
+## 1. Visão Geral do Projeto
 
 Este projeto consiste no desenvolvimento de um robô móvel destinado à inspeção e leitura de sensores em áreas de alta pressão.
 
-### O Problema
+### 1.1 O Problema
 As principais dificuldades identificadas para este tipo de operação incluem:
 * Locomoção em superfícies irregulares e com obstáculos.
 * Garantia da localização e locomoção precisas do robô.
 * Precisão na leitura de medidores e sensores no ambiente.
 
-### Solução Proposta
+### 1.2 Solução Proposta
 Para resolver esses desafios, a arquitetura do projeto combina:
 * Plataforma Móvel: Um robô quadrúpede, escolhido por seu desempenho superior em terrenos irregulares.
 * Manipulador: Um braço robótico com uma câmera acoplada na ponta para realizar a inspeção visual.
@@ -28,18 +28,21 @@ Para resolver esses desafios, a arquitetura do projeto combina:
     * Leitura de medidores para inspeção.
     * Uso de SLAM para mapeamento do ambiente e localização do robô.
 
+### 1.3 Implementação MATLAB/Python
 
-## Manipulador
+O artifício principal do projeto é o Toolbox do Peter Corke implementado nos scripts em Python. A implementação no MATLAB serve como validação para as equações encontradas. 
+
+## 2. Manipulador
 
 Para que as operações sejam corretamente realizadas foi proposto um manipulador RRPRR, 4 juntas rotacionais e 1 prismática, totalizando 5 GDL.
 
-### Especificações do Manipulador
+### 2.1 Especificações do Manipulador
 O design do manipulador foi pensado para o ambiente offshore:
 * Carenagem Fechada: proteção contra riscos de explosão;
 * Material: alumínio, com o intuito de aliviar a massa e garantir a vedação;
 * Câmera: compartimento vedado.
 
-### CAD 
+### 2.2 CAD 
 
 O CAD do manipulador foi realizado através do software *Inventor*.
 
@@ -47,7 +50,7 @@ O CAD do manipulador foi realizado através do software *Inventor*.
   <img src="https://github.com/user-attachments/assets/ad309d2d-8996-4a39-a27b-e9d01af86f6b" alt="CAD do manipulador" width="50%">
 </p>
 
-### Parâmetros de Denavit-Hartenberg
+### 2.3 Parâmetros de Denavit-Hartenberg
 
 Seguindo o modelo proposto, com 5 GDL (RRPRR), a com os parâmetros de Denavit-Hartenberg do manipulador foram agrupados na tabela a seguir:
 
