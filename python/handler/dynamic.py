@@ -227,25 +227,12 @@ class Dynamics:
     # =========================================================
     # MAIN
     # =========================================================
-    def main():
-        params = {"d1": 0.2, "d2": 0.1}
+    def main(self):
+        T = self.calc_kinetic_enercy()
+        V = self.calc_potential_energy()
 
-        robot = rtb.DHRobot([
-            rtb.RevoluteDH(d=params['d1'], a=0, alpha=-np.pi / 2),
-            rtb.RevoluteDH(d=params['d2'], a=0, alpha=np.pi / 2),
-            rtb.PrismaticDH(theta=-np.pi/2, a=0, alpha=0, offset=0.0, qlim=[0.0, 0.5]),
-            rtb.RevoluteDH(d=0, a=0, alpha=np.pi / 2),
-            rtb.RevoluteDH(d=0, a=0, alpha=np.pi / 2)
-        ])
 
-        dyn = Dynamics(robot)
-
-        T = dyn.calc_kinetic_enercy()
-        V = dyn.calc_potential_energy()
-
-        # dyn.show_energy()
-
-        tau, M, C, G = dyn.calc_lagrange_equations()
+        tau, M, C, G = self.calc_lagrange_equations()
 
 
 if __name__ == "__main__":

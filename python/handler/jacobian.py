@@ -19,3 +19,5 @@ class Jacobian:
         
         for line in J:
             print(line)
+        
+        return J
