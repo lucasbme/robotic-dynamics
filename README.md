@@ -1,6 +1,10 @@
 # Robô Móvel com Câmera Acoplada ao Manipulador para Inspeção
 
-Projeto de "Dinâmica de Sistemas Robóticos" desenvolvido por ... O objetivo é o desenvolvimento de um robô de inspeção em plataformas offshore.
+Projeto de "Dinâmica de Sistemas Robóticos" desenvolvido por Leonardo Ortiz, Lucas Bosso de Mello (@lucasbme), Lucas Maroun de Almeida (@MarounLucas), Rafael Janowski Pozzer, Sophia de Souza Nobre Benevides (@benesophi) e Vítor Magalhães Dourado Soares. 
+
+**Nota:** os referenciados com @ são autores do código.
+
+O objetivo é o desenvolvimento de um manipulador robótico para robô de inspeção em plataformas offshore.
 
 
 
@@ -8,11 +12,12 @@ Projeto de "Dinâmica de Sistemas Robóticos" desenvolvido por ... O objetivo é
 
 * [Visão Geral do Projeto](#visão-geral-do-projeto)
 * [Manipulador](#manipulador)
+* [Manual de Uso](#manual-de-uso)
 
 
 ## 1. Visão Geral do Projeto
 
-Este projeto consiste no desenvolvimento de um robô móvel destinado à inspeção e leitura de sensores em áreas de alta pressão.
+Este projeto consiste no desenvolvimento de um manipulador para um robô móvel destinado à inspeção e leitura de sensores em áreas de alta pressão.
 
 ### 1.1 O Problema
 As principais dificuldades identificadas para este tipo de operação incluem:
@@ -30,7 +35,7 @@ Para resolver esses desafios, a arquitetura do projeto combina:
 
 ### 1.3 Implementação MATLAB/Python
 
-O artifício principal do projeto é o Toolbox do Peter Corke implementado nos scripts em Python. A implementação no MATLAB serve como validação para as equações encontradas. 
+O artifício principal do projeto é o Toolbox do Peter Corke implementado nos scripts em Python. A implementação no MATLAB serve como validação para as equações encontradas.
 
 ## 2. Manipulador
 
@@ -61,3 +66,86 @@ Seguindo o modelo proposto, com 5 GDL (RRPRR), a com os parâmetros de Denavit-H
 | 3         | $-\pi/2$           | $q_3$        | 0            | 0                 |
 | 4         | $q_4$              | 0            | 0            | $\pi/2$           |
 | 5         | $q_5$              | 0            | 0            | $\pi/2$           |
+
+## 3. Manual de Uso 
+
+O uso desse pacote pode ser divido em duas partes. A implementação em Python (Toolbox do Peter Corke) possui a simulação principal do projeto com o URDF. Além disso, a modelagem feita com o Toolbox foi tomada como referência para o implementação manual feita no Matlab. Desssa forma, os valores retornados pelo Python foram utilizados como validação da implementação feita no Matlab.
+
+A seguir, uma descrição mais detalhada de como utilizar o pacote, tanto em Python, quanto Matlab.
+
+### 3.1 Python (Toolbox Peter Corke)
+
+A simulação principal em Python está nomeada como ```main.py```. Esta classe possui a chamada de todos os métodos necessários para a simulação e para a modelagem.
+
+Dentro da função ```main.py```, é possível fazer algumas configurações de operação do manipulador. Dentre elas, obter a cinemática direta e inversa, jacobiano, planejar a trajetória no espaço cartesiano e das juntas, e obter as equações dinâmicas. Os demais códigos em Python são as implementações das classes para simulação/modelagem.
+
+Recomendamos manter a linha ```self.dynamic.main()``` comentada, pois há uma grande quantidade de operações matemáticas realizadas nesse método, fazendo com que o tempo de execução eleve consideravelmente.
+
+```python
+        # ==== Cinemática Direta ==== #
+        T = self.kinematics.calc_forward_kinematics(self.q)
+        
+        # ==== Cinemática Inversa ==== #
+        # Definir posição final (end-effector) desejada
+        q_end_effector = [
+            -0.3, # X
+             0.1, # Y
+             0.6, # Z
+        ]
+        ik_solution = self.kinematics.calc_inverse_kinematics(q_end_effector)
+        
+        # ==== Jacobiana ==== #
+        J = self.jacobian.calc_jacobian(self.q, T)
+        
+        # ==== Trajetória ==== #
+        # self.trajectory.trajectory_joint_space(ik_solution)         # Espaço das juntas
+        self.trajectory.trajectory_cartesian_space(q_end_effector)    # Espaço cartesiano
+        
+        # ==== Dinâmica ==== #
+        # self.dynamic.main()
+```
+
+Os valores retornados pelo Toolbox foram tomados como a referência real do que os códigos em Matlab deveriam retornar.
+
+
+### 3.2 Matlab (Validação do Modelo)
+
+O código principal está nomeado como ```demo.m```. Este roda as funções de notação DH (```dh_notation.m```), cinemática direta (```fk.m```), inversa (```ik.m```), jacobiano (```jacobian.m```) e plot 3d (```plot3d.m```).
+
+Dentro de ```demo.m```, a variável ```params``` possui as características do manipulador, incluindo o tamanho dos elos e as rotações em torno das juntas.
+
+```matlab
+% Comprimento dos elos
+params.d2 = 0.20;   % Distância entre as juntas 1 e 2 [m]
+params.d3 = 0.20;   % Comprimento da prismática [m]
+params.d4 = 0.20;   % Distância entre as juntas 3 e 4 [m]
+params.d5 = 0.00;   % Comprimento do end-effector [m]
+
+% Rotações das juntas
+params.q1 = deg2rad(0); % Rotação junta 1
+params.q2 = deg2rad(0); % Rotação junta 2
+params.q4 = deg2rad(0); % Rotação junta 4
+params.q5 = deg2rad(0); % Rotação junta 5
+```
+
+A implementação das funções ocorre no trecho a seguir. Aquela consiste em encontrar as transformações da cinemática direta e gerar um plot, encontrar a cinemática inversa a partir de um ponto solicitado (```q_des```) e gerar um plot, e encontrar o jacobiano.
+
+```matlab
+[Tf,Tp] = fk(q, params);
+disp('Tf:'); disp(Tf);
+
+plot3d(Tp, 1);
+
+% ========== Cinemática Inversa ========== 
+q_des = [0.2, 0.0, 0.3];
+[q_sol, Tf_sol, Ts_sol] = ik(q_des, params);
+disp('Solutions: '); disp(q_sol);
+
+plot3d(Ts_sol, 2);
+
+% ========== Jacobiano ========== 
+J = jacobian(q, params);
+disp('Jacobiano: '); disp(J);
+```
+
+Os valores retornados podem ser validados ao se comparar com os obtidos pelo Toolbox.
